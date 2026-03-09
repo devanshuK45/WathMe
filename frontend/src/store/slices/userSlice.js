@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { api } from '../../utils';
 
 // Get token from auth state (done inside thunk config or via getState)
 const getConfig = (getState) => {
@@ -14,7 +14,7 @@ const getConfig = (getState) => {
 export const fetchUserProfile = createAsyncThunk('user/fetchProfile', async (_, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.get('/api/auth/profile', config);
+        const response = await api.get('/api/auth/profile', config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -24,7 +24,7 @@ export const fetchUserProfile = createAsyncThunk('user/fetchProfile', async (_, 
 export const toggleFavorite = createAsyncThunk('user/toggleFavorite', async ({ tmdbId, movieId, mediaType }, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.put('/api/users/favorites', { tmdbId, movieId, mediaType }, config);
+        const response = await api.put('/api/users/favorites', { tmdbId, movieId, mediaType }, config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -34,7 +34,7 @@ export const toggleFavorite = createAsyncThunk('user/toggleFavorite', async ({ t
 export const addToHistory = createAsyncThunk('user/addToHistory', async ({ tmdbId, movieId, mediaType }, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.post('/api/users/history', { tmdbId, movieId, mediaType }, config);
+        const response = await api.post('/api/users/history', { tmdbId, movieId, mediaType }, config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -44,7 +44,7 @@ export const addToHistory = createAsyncThunk('user/addToHistory', async ({ tmdbI
 export const clearHistory = createAsyncThunk('user/clearHistory', async (_, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.delete('/api/users/history', config);
+        const response = await api.delete('/api/users/history', config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);

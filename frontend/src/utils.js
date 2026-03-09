@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export const handleSuccess = (msg) => {
     toast.success(msg, {
@@ -12,6 +13,9 @@ export const handleError = (msg) => {
     })
 }
 
-// In Vite, we use import.meta.env instead of process.env
-// The prefix must be VITE_ for it to be accessible on the client
 export const APIUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// Create a unified axios instance for the live backend
+export const api = axios.create({
+    baseURL: APIUrl
+});

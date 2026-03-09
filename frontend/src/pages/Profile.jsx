@@ -72,7 +72,7 @@ const Profile = () => {
             <div className="profile-sections">
                 <section className="profile-section">
                     <h3>My Favorites</h3>
-                    {favoriteTmdbIds.length === 0 ? (
+                    {(favoriteTmdbIds.length === 0 && favorites.length === 0) ? (
                         <div className="empty-state">
                             <Heart size={40} className="empty-state-icon" />
                             <p className="empty-state-title">No favorites yet</p>
@@ -80,12 +80,18 @@ const Profile = () => {
                         </div>
                     ) : (
                         <div className="media-grid">
+                            {/* TMDB Favorites */}
                             {favoriteTmdbIds.map((item, index) => {
                                 const id = typeof item === 'object' ? item.tmdbId : item;
                                 const type = typeof item === 'object' ? item.mediaType : 'movie';
                                 if (!id) return null;
-                                return <ProfileMediaCard key={`fav-${id}-${index}`} tmdbId={id} mediaType={type} />;
+                                return <ProfileMediaCard key={`fav-tmdb-${id}-${index}`} tmdbId={id} mediaType={type} />;
                             })}
+
+                            {/* Local Favorites */}
+                            {favorites.map((movieId, index) => (
+                                <ProfileMediaCard key={`fav-local-${movieId}-${index}`} movieId={movieId} mediaType="movie" />
+                            ))}
                         </div>
                     )}
                 </section>
@@ -109,10 +115,20 @@ const Profile = () => {
                     ) : (
                         <div className="media-grid">
                             {[...watchHistory].reverse().map((entry, index) => {
-                                const id = entry.tmdbId;
+                                const tmdbId = entry.tmdbId;
+                                const movieId = entry.movieId;
                                 const type = entry.mediaType || 'movie';
-                                if (!id) return null;
-                                return <ProfileMediaCard key={`hist-${id}-${index}`} tmdbId={id} mediaType={type} />;
+
+                                if (!tmdbId && !movieId) return null;
+
+                                return (
+                                    <ProfileMediaCard
+                                        key={`hist-${tmdbId || movieId}-${index}`}
+                                        tmdbId={tmdbId}
+                                        movieId={movieId}
+                                        mediaType={type}
+                                    />
+                                );
                             })}
                         </div>
                     )}

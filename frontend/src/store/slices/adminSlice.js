@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { api } from '../../utils';
 
 const getConfig = (getState) => {
     const token = getState().auth.token;
@@ -13,7 +13,7 @@ const getConfig = (getState) => {
 export const fetchAllUsers = createAsyncThunk('admin/fetchAllUsers', async (_, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.get('/api/users', config);
+        const response = await api.get('/api/users', config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -23,7 +23,7 @@ export const fetchAllUsers = createAsyncThunk('admin/fetchAllUsers', async (_, t
 export const deleteUser = createAsyncThunk('admin/deleteUser', async (id, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        await axios.delete(`/api/users/${id}`, config);
+        await api.delete(`/api/users/${id}`, config);
         return id;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -33,7 +33,7 @@ export const deleteUser = createAsyncThunk('admin/deleteUser', async (id, thunkA
 export const fetchAllAdminMovies = createAsyncThunk('admin/fetchAllMovies', async (_, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.get('/api/movies', config);
+        const response = await api.get('/api/movies', config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -43,7 +43,7 @@ export const fetchAllAdminMovies = createAsyncThunk('admin/fetchAllMovies', asyn
 export const createMovie = createAsyncThunk('admin/createMovie', async (movieData, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.post('/api/movies', movieData, config);
+        const response = await api.post('/api/movies', movieData, config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -53,7 +53,7 @@ export const createMovie = createAsyncThunk('admin/createMovie', async (movieDat
 export const updateMovie = createAsyncThunk('admin/updateMovie', async ({ id, movieData }, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.put(`/api/movies/${id}`, movieData, config);
+        const response = await api.put(`/api/movies/${id}`, movieData, config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -63,7 +63,7 @@ export const updateMovie = createAsyncThunk('admin/updateMovie', async ({ id, mo
 export const deleteMovie = createAsyncThunk('admin/deleteMovie', async (id, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        await axios.delete(`/api/movies/${id}`, config);
+        await api.delete(`/api/movies/${id}`, config);
         return id;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -73,7 +73,7 @@ export const deleteMovie = createAsyncThunk('admin/deleteMovie', async (id, thun
 export const toggleBanUser = createAsyncThunk('admin/toggleBanUser', async (id, thunkAPI) => {
     try {
         const config = getConfig(thunkAPI.getState);
-        const response = await axios.put(`/api/users/${id}/ban`, {}, config);
+        const response = await api.put(`/api/users/${id}/ban`, {}, config);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);

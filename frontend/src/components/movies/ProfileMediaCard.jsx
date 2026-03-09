@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import tmdbApi from '../../services/tmdbApi';
+import { api } from '../../utils';
 import MovieCard from './MovieCard';
 
-const ProfileMediaCard = ({ tmdbId, mediaType }) => {
+const ProfileMediaCard = ({ tmdbId, movieId, mediaType }) => {
     const [media, setMedia] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -12,29 +13,39 @@ const ProfileMediaCard = ({ tmdbId, mediaType }) => {
         const fetchDetails = async () => {
             try {
                 setLoading(true);
-                const response = await tmdbApi.get(`/${mediaType}/${tmdbId}`);
-                if (isMounted) {
+                let response;
+
+                if (tmdbId) {
+                    // Fetch from TMDB
+                    response = await tmdbApi.get(`/${mediaType || 'movie'}/${tmdbId}`);
+                } else if (movieId) {
+                    // Fetch from our local backend
+                    response = await api.get(`/api/movies/${movieId}`);
+                }
+
+                if (isMounted && response) {
                     setMedia(response.data);
                     setLoading(false);
                 }
             } catch (err) {
                 if (isMounted) {
+                    console.error('Error fetching media details:', err);
                     setError('Failed to load item');
                     setLoading(false);
                 }
             }
         };
 
-        if (tmdbId && mediaType) {
+        if (tmdbId || movieId) {
             fetchDetails();
         }
 
         return () => {
             isMounted = false;
         };
-    }, [tmdbId, mediaType]);
+    }, [tmdbId, movieId, mediaType]);
 
-    if (loading) return <div className="card-skeleton"></div>;
+    if (loading) return <div className="card-skeleton" style={{ height: '300px', backgroundColor: '#333', borderRadius: '8px' }}></div>;
     if (error || !media) return null;
 
     return <MovieCard movie={media} />;

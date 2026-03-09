@@ -9,10 +9,12 @@ const MovieCard = ({ movie }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector(state => state.auth);
-    const { favoriteTmdbIds } = useSelector(state => state.user);
+    const { favorites, favoriteTmdbIds } = useSelector(state => state.user);
 
     const isFavorite = favoriteTmdbIds?.some(fav =>
         (typeof fav === 'object' ? fav.tmdbId : fav) === movie.id
+    ) || favorites?.some(favId =>
+        favId.toString() === movie._id?.toString()
     );
 
     const handleFavorite = (e) => {

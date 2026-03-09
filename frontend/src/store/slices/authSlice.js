@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { handleSuccess, handleError } from '../../utils';
+import { handleSuccess, handleError, api } from '../../utils';
 
 // Async Thunks
 export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
     try {
-        const response = await axios.post('/api/auth/login', userData);
+        const response = await api.post('/api/auth/login', userData);
         localStorage.setItem('watchme_token', response.data.token);
         handleSuccess(response.data.message || 'Login successful');
         return response.data;
@@ -18,7 +17,7 @@ export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) =
 
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
     try {
-        const response = await axios.post('/api/auth/register', userData);
+        const response = await api.post('/api/auth/register', userData);
         localStorage.setItem('watchme_token', response.data.token);
         handleSuccess(response.data.message || 'Registration successful');
         return response.data;
