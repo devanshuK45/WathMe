@@ -15,11 +15,13 @@ app.use(express.json());
 const authRoutes = require('./routes/authRoutes');
 const movieRoutes = require('./routes/movieRoutes');
 const userRoutes = require('./routes/userRoutes');
+const tmdbRoutes = require('./routes/tmdbRoutes');
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/tmdb', tmdbRoutes);
 
 app.get('/', (req, res) => {
     res.send('WatchMe Backend Running...');
