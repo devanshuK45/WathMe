@@ -1,14 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { handleSuccess, handleError } from '../../utils';
 
 // Async Thunks
 export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
     try {
         const response = await axios.post('/api/auth/login', userData);
         localStorage.setItem('watchme_token', response.data.token);
+        handleSuccess(response.data.message || 'Login successful');
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.message || error.message);
+        const message = error.response?.data?.message || error.message;
+        handleError(message);
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
@@ -16,9 +20,12 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
     try {
         const response = await axios.post('/api/auth/register', userData);
         localStorage.setItem('watchme_token', response.data.token);
+        handleSuccess(response.data.message || 'Registration successful');
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.message || error.message);
+        const message = error.response?.data?.message || error.message;
+        handleError(message);
+        return thunkAPI.rejectWithValue(message);
     }
 });
 

@@ -15,6 +15,8 @@ import MovieDetails from './pages/MovieDetails';
 import PersonDetails from './pages/PersonDetails';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 import { fetchUserProfile } from './store/slices/userSlice';
@@ -58,6 +60,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <ToastContainer />
       </div>
     </ThemeProvider>
   );
