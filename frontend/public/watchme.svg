@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f1f1f" />
+      <stop offset="100%" stop-color="#0a0a0a" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3b46" />
+      <stop offset="100%" stop-color="#e50914" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#e50914" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#e50914" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background with smooth squircle -->
+  <rect width="100" height="100" rx="24" fill="url(#bg)" />
+
+  <!-- Glowing core for the eye -->
+  <circle cx="50" cy="50" r="35" fill="url(#glow)"/>
+
+  <!-- Eye bounds -->
+  <path d="M 14 50 Q 50 16 86 50 Q 50 84 14 50 Z" fill="none" stroke="url(#accent)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Play icon inside (Pupil) -->
+  <path d="M 43 36 L 43 64 L 66 50 Z" fill="#ffffff" />
+</svg>
