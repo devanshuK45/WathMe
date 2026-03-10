@@ -5,6 +5,7 @@ import { fetchMovieDetails, clearMovieDetails } from '../store/slices/movieSlice
 import { toggleFavorite, addToHistory } from '../store/slices/userSlice';
 import MovieCard from '../components/movies/MovieCard';
 import { Play, Plus, X, Check } from 'lucide-react';
+import { toast } from 'react-toastify';
 import './MovieDetails.css';
 
 const TrailerModal = memo(({ videoId, onClose }) => {
@@ -39,14 +40,16 @@ const MovieDetails = () => {
 
     const { user } = useSelector(state => state.auth);
     const { currentMovie: movie, isMovieLoading: isLoading, error } = useSelector(state => state.movie);
-    const { favoriteTmdbIds } = useSelector(state => state.user);
+    const { favoriteTmdbIds, favorites } = useSelector(state => state.user);
 
     const [showTrailer, setShowTrailer] = useState(false);
     const isTv = window.location.pathname.startsWith('/tv');
 
+    const tmdbCheckId = movie?.tmdb_id || (typeof movie?.id === 'number' ? movie.id : undefined);
+
     const isFavorite = favoriteTmdbIds?.some(fav =>
-        (typeof fav === 'object' ? String(fav.tmdbId) : String(fav)) === String(movie?.id || movie?.tmdb_id)
-    ) || user?.favorites?.some(favId =>
+        (typeof fav === 'object' ? String(fav.tmdbId) : String(fav)) === String(tmdbCheckId)
+    ) || favorites?.some(favId =>
         String(favId) === String(movie?._id)
     );
 
@@ -63,11 +66,19 @@ const MovieDetails = () => {
             return;
         }
         dispatch(toggleFavorite({
-            tmdbId: movie?.id,
+            tmdbId: tmdbCheckId,
             movieId: movie?._id,
             mediaType: isTv ? 'tv' : 'movie'
-        }));
-    }, [user, navigate, dispatch, movie?.id, movie?._id, isTv]);
+        })).unwrap()
+            .then(() => {
+                if (isFavorite) {
+                    toast.info(`Removed ${movie?.title || movie?.name || 'item'} from favorites`, { icon: "💔" });
+                } else {
+                    toast.success(`Added ${movie?.title || movie?.name || 'item'} to favorites`, { icon: "❤️" });
+                }
+            })
+            .catch(err => toast.error(err || 'Failed to update favorites'));
+    }, [user, navigate, dispatch, tmdbCheckId, movie?._id, isTv, isFavorite, movie]);
 
     const handleWatchTrailer = useCallback(() => {
         setShowTrailer(true);

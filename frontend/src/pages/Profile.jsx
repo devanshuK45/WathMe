@@ -11,7 +11,7 @@ const Profile = () => {
     const navigate = useNavigate();
 
     const { user } = useSelector(state => state.auth);
-    const { favoriteTmdbIds, watchHistory, isLoading } = useSelector(state => state.user);
+    const { favoriteTmdbIds, favorites, watchHistory, isLoading } = useSelector(state => state.user);
 
     const fetchedRef = React.useRef(false);
 
