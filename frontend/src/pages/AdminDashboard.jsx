@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllUsers, deleteUser, toggleBanUser, fetchAllAdminMovies, deleteMovie, createMovie, updateMovie, clearAdminError } from '../store/slices/adminSlice';
 import { Users, Film, Plus, Trash2, Edit, ShieldAlert, ShieldCheck, X } from 'lucide-react';
+import { toast } from 'react-toastify';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -36,17 +37,29 @@ const AdminDashboard = () => {
 
     const handleDeleteUser = (id) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
-            dispatch(deleteUser(id));
+            dispatch(deleteUser(id)).unwrap()
+                .then(() => toast.success('User deleted successfully', { icon: "🗑️" }))
+                .catch(err => toast.error(err || 'Failed to delete user'));
         }
     };
 
     const handleToggleBan = (id) => {
-        dispatch(toggleBanUser(id));
+        dispatch(toggleBanUser(id)).unwrap()
+            .then((updatedUser) => {
+                if (updatedUser.isBanned) {
+                    toast.warning('User has been banned', { icon: "🚫" });
+                } else {
+                    toast.success('User has been unbanned', { icon: "✅" });
+                }
+            })
+            .catch(err => toast.error(err || 'Failed to update user status'));
     };
 
     const handleDeleteMovie = (id) => {
         if (window.confirm('Are you sure you want to delete this movie?')) {
-            dispatch(deleteMovie(id));
+            dispatch(deleteMovie(id)).unwrap()
+                .then(() => toast.success('Movie deleted successfully', { icon: "🎞️" }))
+                .catch(err => toast.error(err || 'Failed to delete movie'));
         }
     };
 
@@ -83,11 +96,20 @@ const AdminDashboard = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingMovie) {
-            dispatch(updateMovie({ id: editingMovie._id, movieData: formData }));
+            dispatch(updateMovie({ id: editingMovie._id, movieData: formData })).unwrap()
+                .then(() => {
+                    toast.success('Movie updated successfully', { icon: "📝" });
+                    setShowModal(false);
+                })
+                .catch(err => toast.error(err || 'Failed to update movie'));
         } else {
-            dispatch(createMovie(formData));
+            dispatch(createMovie(formData)).unwrap()
+                .then(() => {
+                    toast.success('Movie added successfully', { icon: "🎬" });
+                    setShowModal(false);
+                })
+                .catch(err => toast.error(err || 'Failed to add movie'));
         }
-        setShowModal(false);
     };
 
     return (

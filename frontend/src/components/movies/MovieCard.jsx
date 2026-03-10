@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Play, Plus, Check, Heart } from 'lucide-react';
 import { toggleFavorite } from '../../store/slices/userSlice';
+import { toast } from 'react-toastify';
 import './MovieCard.css';
 
 const MovieCard = ({ movie }) => {
@@ -11,8 +12,10 @@ const MovieCard = ({ movie }) => {
     const { user } = useSelector(state => state.auth);
     const { favorites, favoriteTmdbIds } = useSelector(state => state.user);
 
+    const tmdbCheckId = movie.tmdb_id || (typeof movie.id === 'number' ? movie.id : undefined);
+
     const isFavorite = favoriteTmdbIds?.some(fav =>
-        (typeof fav === 'object' ? fav.tmdbId : fav) === movie.id
+        (typeof fav === 'object' ? fav.tmdbId : fav) === tmdbCheckId
     ) || favorites?.some(favId =>
         favId.toString() === movie._id?.toString()
     );
@@ -25,10 +28,24 @@ const MovieCard = ({ movie }) => {
             return;
         }
         dispatch(toggleFavorite({
-            tmdbId: movie.id,
+            tmdbId: tmdbCheckId,
             movieId: movie._id,
             mediaType: movie.title ? 'movie' : 'tv'
-        }));
+        })).unwrap()
+            .then(() => {
+                if (isFavorite) {
+                    toast.info(`Removed ${movie.title || movie.name || 'item'} from favorites`, {
+                        icon: "💔"
+                    });
+                } else {
+                    toast.success(`Added ${movie.title || movie.name || 'item'} to favorites`, {
+                        icon: "❤️"
+                    });
+                }
+            })
+            .catch((err) => {
+                toast.error(err || 'Failed to update favorites');
+            });
     };
 
     const imageUrl = movie.poster_path
